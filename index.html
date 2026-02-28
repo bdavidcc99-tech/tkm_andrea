@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System.out.println("Bautizo Digital - Andrea");</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #38bdf8;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .media-container {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #38bdf8;
+            background: #000;
+        }
+
+        video { width: 100%; display: block; }
+
+        #typing-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            text-align: left;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-celebrar {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-celebrar:hover {
+            transform: scale(1.05);
+            background: #0ea5e9;
+        }
+
+        /* Modal para el mensaje del Big Mac */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e293b;
+            border: 2px solid #f472b6;
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 100;
+            width: 80%;
+            max-width: 300px;
+            box-shadow: 0 0 30px rgba(244, 114, 182, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="media-container">
+            <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/dv4nu0xgt/video/upload/v1772258361/imagen_tkm_ak843e.mp4" type="video/mp4">
+                Tu navegador no soporta videos.
+            </video>
+        </div>
+        
+        <div id="typing-text"></div>
+        <button class="btn-celebrar" onclick="mostrarCompromiso()">✨ Aceptar Bendiciones ✨</button>
+    </div>
+
+    <div id="modal">
+        <p>✅ <b>¡Protocolo Aceptado!</b></p>
+        <p>Has aceptado las bendiciones y te acabas de comprometer a comprarme un mi Big Mac agrandado jaja 🍔🍟</p>
+        <button onclick="cerrarModal()" style="background:none; border:1px solid #fff; color:#fff; border-radius:5px; cursor:pointer;">Entendido (y anotado)</button>
+    </div>
+
+    <script>
+        const text = "¡Feliz Cumpleaños, Andrea! 🎂\n\nQue este nuevo año de vida esté lleno de las bendiciones de Dios y de mucha alegría. Sabes que te quiero muchísimo, deseo que tu vida siga llena de momentos increíbles y que tu camino esté siempre iluminado por nuestro Dios ✨.\n\nMe recordaste este pensamiento: 'Muchas mujeres hicieron el bien; mas tú sobrepasas a todas' (Proverbios 31:29) y es que, de verdad, 'Toda tú eres bella, amiga mía, y en ti no hay mancha' (Cantares 4:7).\n\nTambién: 'El Señor te bendiga y te guarde; el Señor haga resplandecer su rostro sobre ti...' (Números 6:24-25).\n\n¡Disfruta mucho tu día, te mando un super mega hiper abrazo ♡ !\n\n(pd: guardame pastel)";
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                let char = text.charAt(i);
+                document.getElementById("typing-text").innerHTML += char === '\n' ? '<br>' : char;
+                i++;
+                setTimeout(typeWriter, 30);
+            }
+        }
+
+        function mostrarCompromiso() {
+            document.getElementById('modal').style.display = 'block';
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#38bdf8', '#f472b6', '#ffea00']
+            });
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        window.onload = () => {
+            setTimeout(typeWriter, 500);
+            lanzarConfetiInicial();
+        };
+
+        function lanzarConfetiInicial() {
+            const end = Date.now() + 4000;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</body>
+</html>
