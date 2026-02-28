@@ -67,7 +67,8 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             max-width: 450px;
             width: 100%;
-            display: none; /* Se muestra al terminar la carga */
+            display: none;
+            position: relative;
         }
 
         .media-container {
@@ -91,6 +92,8 @@
         }
 
         .btn-celebrar {
+            display: none;
+            opacity: 0;
             background: var(--primary);
             color: #0f172a;
             border: none;
@@ -98,11 +101,22 @@
             border-radius: 30px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, opacity 1s ease;
             font-size: 1rem;
         }
 
         .btn-celebrar:hover { transform: scale(1.05); }
+
+        /* Sello del Ingeniero */
+        .signature {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: rgba(56, 189, 248, 0.4);
+            font-style: italic;
+        }
 
         /* Modal */
         #modal {
@@ -138,6 +152,8 @@
         
         <div id="typing-text"></div>
         <button class="btn-celebrar" onclick="mostrarCompromiso(event)">✨ Aceptar Bendiciones ✨</button>
+        
+        <div class="signature">// Programado por el inge que te quiere mucho</div>
     </div>
 
     <div id="modal">
@@ -151,7 +167,6 @@
         
         let i = 0;
 
-        // 1. Simulación de Carga
         function startLoading() {
             let width = 0;
             const progress = document.getElementById('progress');
@@ -172,17 +187,21 @@
             }, 30);
         }
 
-        // 2. Efecto Escritura
         function typeWriter() {
             if (i < text.length) {
                 let char = text.charAt(i);
                 document.getElementById("typing-text").innerHTML += char === '\n' ? '<br>' : char;
                 i++;
                 setTimeout(typeWriter, 35);
+            } else {
+                const btn = document.querySelector('.btn-celebrar');
+                btn.style.display = 'inline-block';
+                setTimeout(() => {
+                    btn.style.opacity = '1';
+                }, 50);
             }
         }
 
-        // 3. Confeti al tocar pantalla
         function confetiExplosion(e) {
             confetti({
                 particleCount: 15,
@@ -193,7 +212,7 @@
         }
 
         function mostrarCompromiso(e) {
-            e.stopPropagation(); // Evita doble confeti
+            e.stopPropagation(); 
             document.getElementById('modal').style.display = 'block';
             confetti({
                 particleCount: 150,
