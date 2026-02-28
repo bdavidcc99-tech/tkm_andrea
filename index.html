@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System.out.println("Bautizo Digital - Andrea");</title>
+    <title>System.out.println("Happy Birthday, Andrea");</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
+        :root {
+            --primary: #38bdf8;
+            --secondary: #f472b6;
+            --bg: #0f172a;
+        }
+
         body {
-            background-color: #0f172a;
+            background-color: var(--bg);
             color: #f8fafc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -18,17 +24,50 @@
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
+            overflow-x: hidden;
         }
 
+        /* Pantalla de Carga */
+        #loader-container {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: #1e293b;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid var(--primary);
+        }
+
+        #progress {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.1s;
+        }
+
+        /* Tarjeta Principal */
         .card {
             background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid #38bdf8;
+            border: 1px solid var(--primary);
             padding: 25px;
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             max-width: 450px;
             width: 100%;
+            display: none; /* Se muestra al terminar la carga */
         }
 
         .media-container {
@@ -36,7 +75,7 @@
             border-radius: 12px;
             overflow: hidden;
             margin-bottom: 20px;
-            border: 2px solid #38bdf8;
+            border: 2px solid var(--primary);
             background: #000;
         }
 
@@ -44,7 +83,7 @@
 
         #typing-text {
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #e2e8f0;
             text-align: left;
             white-space: pre-wrap;
@@ -52,23 +91,20 @@
         }
 
         .btn-celebrar {
-            background: #38bdf8;
+            background: var(--primary);
             color: #0f172a;
             border: none;
             padding: 12px 25px;
             border-radius: 30px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: transform 0.2s;
             font-size: 1rem;
         }
 
-        .btn-celebrar:hover {
-            transform: scale(1.05);
-            background: #0ea5e9;
-        }
+        .btn-celebrar:hover { transform: scale(1.05); }
 
-        /* Modal para el mensaje del Big Mac */
+        /* Modal */
         #modal {
             display: none;
             position: fixed;
@@ -76,50 +112,88 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: #1e293b;
-            border: 2px solid #f472b6;
+            border: 2px solid var(--secondary);
             padding: 20px;
             border-radius: 15px;
-            z-index: 100;
+            z-index: 1000;
             width: 80%;
             max-width: 300px;
             box-shadow: 0 0 30px rgba(244, 114, 182, 0.4);
         }
     </style>
 </head>
-<body>
+<body onclick="confetiExplosion(event)">
 
-    <div class="card">
+    <div id="loader-container">
+        <p style="font-family: monospace; color: var(--primary);">[Executing: blessing_protocol.sh]</p>
+        <div class="progress-bar"><div id="progress"></div></div>
+    </div>
+
+    <div class="card" id="main-card">
         <div class="media-container">
             <video autoplay loop muted playsinline>
                 <source src="https://res.cloudinary.com/dv4nu0xgt/video/upload/v1772258361/imagen_tkm_ak843e.mp4" type="video/mp4">
-                Tu navegador no soporta videos.
             </video>
         </div>
         
         <div id="typing-text"></div>
-        <button class="btn-celebrar" onclick="mostrarCompromiso()">✨ Aceptar Bendiciones ✨</button>
+        <button class="btn-celebrar" onclick="mostrarCompromiso(event)">✨ Aceptar Bendiciones ✨</button>
     </div>
 
     <div id="modal">
         <p>✅ <b>¡Protocolo Aceptado!</b></p>
         <p>Has aceptado las bendiciones y te acabas de comprometer a comprarme un mi Big Mac agrandado jaja 🍔🍟</p>
-        <button onclick="cerrarModal()" style="background:none; border:1px solid #fff; color:#fff; border-radius:5px; cursor:pointer;">Entendido (y anotado)</button>
+        <button onclick="cerrarModal()" style="background:none; border:1px solid #fff; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer;">Entendido (y anotado)</button>
     </div>
 
     <script>
-        const text = "¡Feliz Cumpleaños, Andrea! 🎂\n\nQue este nuevo año de vida esté lleno de las bendiciones de Dios y de mucha alegría. Sabes que te quiero muchísimo, deseo que tu vida siga llena de momentos increíbles y que tu camino esté siempre iluminado por nuestro Dios ✨.\n\nMe recordaste este pensamiento: 'Muchas mujeres hicieron el bien; mas tú sobrepasas a todas' (Proverbios 31:29) y es que, de verdad, 'Toda tú eres bella, amiga mía, y en ti no hay mancha' (Cantares 4:7).\n\nTambién: 'El Señor te bendiga y te guarde; el Señor haga resplandecer su rostro sobre ti...' (Números 6:24-25).\n\n¡Disfruta mucho tu día, te mando un super mega hiper abrazo ♡ !\n\n(pd: guardame pastel)";
+        const text = "¡Feliz Cumpleaños, Andrea! 🎂\n\nQue este nuevo año de vida esté lleno de las bendiciones de Dios y de mucha alegría. Sabes que te quiero muchísimo, deseo que tu vida siga llena de momentos increíbles y que tu camino esté siempre iluminado por nuestro Dios ✨.\n\nMe recordaste este pensamiento: 'Muchas mujeres hicieron el bien; mas tú sobrepasas a todas' (Proverbios 31:29) y es que, de verdad, 'Toda tú eres bella, amiga mía, y en ti no hay mancha' (Cantares 4:7).\n\nTambién, este versículo es para ti: 'El Señor te bendiga y te guarde; el Señor haga resplandecer su rostro sobre ti...' (Números 6:24-25).\n\n¡Disfruta mucho tu día, te mando un super mega hiper abrazo ♡ !\n\n(pd: guardame pastel)";
         
         let i = 0;
+
+        // 1. Simulación de Carga
+        function startLoading() {
+            let width = 0;
+            const progress = document.getElementById('progress');
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('loader-container').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loader-container').style.display = 'none';
+                        document.getElementById('main-card').style.display = 'block';
+                        typeWriter();
+                        lanzarConfetiInicial();
+                    }, 500);
+                } else {
+                    width++;
+                    progress.style.width = width + '%';
+                }
+            }, 30);
+        }
+
+        // 2. Efecto Escritura
         function typeWriter() {
             if (i < text.length) {
                 let char = text.charAt(i);
                 document.getElementById("typing-text").innerHTML += char === '\n' ? '<br>' : char;
                 i++;
-                setTimeout(typeWriter, 30);
+                setTimeout(typeWriter, 35);
             }
         }
 
-        function mostrarCompromiso() {
+        // 3. Confeti al tocar pantalla
+        function confetiExplosion(e) {
+            confetti({
+                particleCount: 15,
+                spread: 70,
+                origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+                colors: ['#38bdf8', '#f472b6', '#ffffff']
+            });
+        }
+
+        function mostrarCompromiso(e) {
+            e.stopPropagation(); // Evita doble confeti
             document.getElementById('modal').style.display = 'block';
             confetti({
                 particleCount: 150,
@@ -133,19 +207,16 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        window.onload = () => {
-            setTimeout(typeWriter, 500);
-            lanzarConfetiInicial();
-        };
-
         function lanzarConfetiInicial() {
-            const end = Date.now() + 4000;
+            const end = Date.now() + 3000;
             (function frame() {
                 confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
                 confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
+
+        window.onload = startLoading;
     </script>
 </body>
 </html>
